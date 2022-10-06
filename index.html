@@ -86,7 +86,7 @@ function update() {
     fallCounter = 0;
     grass1 = { pos: vec(rnd(0, G.WIDTH/2), 80) };
     // grass2 = { pos: vec(rnd((G.WIDTH/2 + 1), G.WIDTH), 80) };
-    fall = times(8, () => {
+    fall = times(5, () => {
       const posX = rnd(0, G.WIDTH);
       const posY = 0;
       return {
@@ -94,7 +94,7 @@ function update() {
           speed: rnd(0.5, 1.0)
       };
     });
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 5; i++) {
       fall.push({
           pos: vec(rnd(0, G.WIDTH), rnd(0, G.HEIGHT)),
           speed: rnd(0.8, 1.5)
@@ -119,9 +119,6 @@ function update() {
     grass1 = { pos: vec(rnd(0, G.WIDTH), 80) };
     ticks = 0;
   }
-  // grass2 color and shape
-  // color("light_green");
-  // box(grass2.pos, 5);
 
   // player color and shape
   color("black");
@@ -152,34 +149,61 @@ function update() {
     end();
   }
 
-  // const grassCollide2 = char("a", player.pos).isColliding.rect.light_green;
-  // if (grassCollide2) {
-  //   console.log("grass")
-  //   // grass1 = { pos: vec(rnd(0, G.WIDTH/2), 80) };
-  //   grass2 = { pos: vec(rnd(0, G.WIDTH/2), 80) };
-  //   // play("explosion");
-  // }
-
   // player movement
+//    // if the input it pressed and the player hasnt reached the end of the screen
+//  if ((input.isPressed) && (player.pos.x != G.WIDTH) && (moveFlag == false)) {
+//    player.pos.add(1, 0);
+//    console.log(player.pos.x);
+//  }  
+//    // if the player reaches the end of the screen
+//  if ((player.pos.x == G.WIDTH)) {
+//    console.log("check2")
+//    moveFlag = true;
+//  } 
+//    // player moving towards the left side -front- of the screen
+//   if ((input.isPressed) && (moveFlag == true)) {
+//    console.log("check")
+//    console.log(moveFlag);
+//    player.pos.sub(1, 0);
+//
+//  }
+//  if ((player.pos.x == 0)) {
+//    console.log("check2")
+//    moveFlag = false;
+//  } 
+    // if the input it pressed and the player hasnt reached the end of the screen
+    player.pos.clamp(0, G.WIDTH, 0, G.HEIGHT);
   if ((input.isPressed) && (player.pos.x != G.WIDTH) && (moveFlag == false)) {
     player.pos.add(1, 0);
     console.log(player.pos.x);
   }  
-  if ((player.pos.x == G.WIDTH)) {
-    console.log("check2")
-    moveFlag = true;
-  } 
-   if ((input.isPressed) && (moveFlag == true)) {
-    console.log("check")
-    console.log(moveFlag);
-    player.pos.sub(1, 0);
-
-  }
-  if ((player.pos.x == 0)) {
-    console.log("check2")
-    moveFlag = false;
-  } 
-   
+    if (!(input.isPressed)) {
+        player.pos.sub(1, 0);
+    }
+    if (!(input.isPressed) && (player.pos.x == 0)) {
+        moveFlag = true
+        player.pos.sub(1, 0);
+    }
+    if ((input.isPressed) && (moveFlag == true)) {
+        player.pos.add(1, 0);
+    }
+    // if the player reaches the end of the screen
+//  if ((player.pos.x == G.WIDTH)) {
+//    console.log("check2")
+//    moveFlag = true;
+//  } 
+//    // player moving towards the left side -front- of the screen
+//   if ((input.isPressed) && (moveFlag == true)) {
+//    console.log("check")
+//    console.log(moveFlag);
+//    player.pos.sub(1, 0);
+//
+//  }
+//  if ((player.pos.x == 0)) {
+//    console.log("check2")
+//    moveFlag = false;
+//  } 
+   /////////////////////////////////////////////////
   // floor
   color("yellow");
   rect(0, 83, 100, 17).isColliding;
