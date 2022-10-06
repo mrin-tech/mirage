@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>crisp-game-lib</title>
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height,
+    user-scalable=no, initial-scale=1, maximum-scale=1"
+    />
+    <script src="https://unpkg.com/sounds-some-sounds@3.0.0/build/index.js"></script>
+    <script src="https://unpkg.com/gif-capture-canvas@1.1.0/build/index.js"></script>
+    <script src="https://unpkg.com/pixi.js@5.3.0/dist/pixi.min.js"></script>
+    <script src="https://unpkg.com/pixi-filters@3.1.1/dist/pixi-filters.js"></script>
+    <script src="https://unpkg.com/crisp-game-lib@1.1.0/docs/bundle.js"></script>
+
+<script>
+title = "MIRAGE";
+
+description = ` 
+Catch the
+Mirage 
+in the 
+Sand Storm
+`;
+
+characters = [
+  ` 
+   ll
+l llll
+llllll
+l llll
+  l  l
+  l  l
+`
+];
+
+const G = {
+	WIDTH: 100,
+	HEIGHT: 100
+};
+options = {
+  theme: "dark",
+  viewSize: {x: G.WIDTH, y: G.HEIGHT},
+  // isPlayingBgm: true
+};
+
+/**
+* @typedef {{
+  * pos: Vector,
+  * speed: number
+  * }} Fall
+  */
+  
+  /**
+  * @type  { Fall [] }
+  */
+  let fall;
+
+/**
+ * @typedef {{
+ * pos: Vector,
+ * }} Player
+ */
+
+/**
+ * @type { Player }
+ */
+let player;
+let moveFlag;
+
+/**
+ * @typedef {{
+ * pos: Vector,
+ * }} Grass
+ */
+
+/**
+ * @type { Grass }
+ */
+let grass1;
+// let grass2;
+let fallCounter;
+function update() {
+  if (!ticks) {
+    fallCounter = 0;
+    grass1 = { pos: vec(rnd(0, G.WIDTH/2), 80) };
+    // grass2 = { pos: vec(rnd((G.WIDTH/2 + 1), G.WIDTH), 80) };
+    fall = times(8, () => {
+      const posX = rnd(0, G.WIDTH);
+      const posY = 0;
+      return {
+          pos: vec(posX, posY),
+          speed: rnd(0.5, 1.0)
+      };
+    });
+    for (let i = 0; i < 8; i++) {
+      fall.push({
+          pos: vec(rnd(0, G.WIDTH), rnd(0, G.HEIGHT)),
+          speed: rnd(0.8, 1.5)
+      });
+    }
+    player = { pos: vec(50, 80) };
+    moveFlag = false;
+  }
+  // falling items
+  fall.forEach((s) => {
+    s.pos.y += s.speed;
+    s.pos.wrap(0, G.WIDTH, 0, G.HEIGHT);
+    color("yellow");
+    box(s.pos, 1);
+  });
+  
+  // grass color and shape
+  color("green");
+  box(grass1.pos, 5);
+
+  if (ticks == 180) {
+    grass1 = { pos: vec(rnd(0, G.WIDTH), 80) };
+    ticks = 0;
+  }
+  // grass2 color and shape
+  // color("light_green");
+  // box(grass2.pos, 5);
+
+  // player color and shape
+  color("black");
+  char("a", player.pos);
+  // if player is colliding with light black fall
+  const collide = char("a", player.pos).isColliding.rect.light_black;
+  if (collide) {
+    console.log("11collide")
+    // play("explosion");
+  }
+  const grassCollide = char("a", player.pos).isColliding.rect.green;
+  if (grassCollide) {
+    console.log("grass")
+    grass1 = { pos: vec(rnd(0, G.WIDTH), 80) };
+    play("coin");
+    addScore(1);
+    // grass2 = { pos: vec(rnd((G.WIDTH/2 + 20), G.WIDTH), 80) };
+    // play("explosion");
+  }
+
+  const fallCollide = char("a", player.pos).isColliding.rect.yellow;
+  if (fallCollide) {
+    fallCounter+=1;
+  }
+  console.log("fallCounter", fallCounter)
+  if (fallCounter == 3) {
+    play("explosion");
+    end();
+  }
+
+  // const grassCollide2 = char("a", player.pos).isColliding.rect.light_green;
+  // if (grassCollide2) {
+  //   console.log("grass")
+  //   // grass1 = { pos: vec(rnd(0, G.WIDTH/2), 80) };
+  //   grass2 = { pos: vec(rnd(0, G.WIDTH/2), 80) };
+  //   // play("explosion");
+  // }
+
+  // player movement
+  if ((input.isPressed) && (player.pos.x != G.WIDTH) && (moveFlag == false)) {
+    player.pos.add(1, 0);
+    console.log(player.pos.x);
+  }  
+  if ((player.pos.x == G.WIDTH)) {
+    console.log("check2")
+    moveFlag = true;
+  } 
+   if ((input.isPressed) && (moveFlag == true)) {
+    console.log("check")
+    console.log(moveFlag);
+    player.pos.sub(1, 0);
+
+  }
+  if ((player.pos.x == 0)) {
+    console.log("check2")
+    moveFlag = false;
+  } 
+   
+  // floor
+  color("yellow");
+  rect(0, 83, 100, 17).isColliding;
+}
+
+
+addEventListener("load", onLoad);
+</script>
+
+  </head>
+  <body style="background: #ddd"></body>
+</html>
