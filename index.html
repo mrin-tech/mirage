@@ -18,10 +18,8 @@
 title = "MIRAGE";
 
 description = ` 
-Catch the
-Mirage 
-in the 
-Sand Storm
+Hold To 
+Move Back
 `;
 
 characters = [
@@ -150,27 +148,7 @@ function update() {
   }
 
   // player movement
-//    // if the input it pressed and the player hasnt reached the end of the screen
-//  if ((input.isPressed) && (player.pos.x != G.WIDTH) && (moveFlag == false)) {
-//    player.pos.add(1, 0);
-//    console.log(player.pos.x);
-//  }  
-//    // if the player reaches the end of the screen
-//  if ((player.pos.x == G.WIDTH)) {
-//    console.log("check2")
-//    moveFlag = true;
-//  } 
-//    // player moving towards the left side -front- of the screen
-//   if ((input.isPressed) && (moveFlag == true)) {
-//    console.log("check")
-//    console.log(moveFlag);
-//    player.pos.sub(1, 0);
-//
-//  }
-//  if ((player.pos.x == 0)) {
-//    console.log("check2")
-//    moveFlag = false;
-//  } 
+
     // if the input it pressed and the player hasnt reached the end of the screen
     player.pos.clamp(0, G.WIDTH, 0, G.HEIGHT);
   if ((input.isPressed) && (player.pos.x != G.WIDTH) && (moveFlag == false)) {
@@ -187,23 +165,7 @@ function update() {
     if ((input.isPressed) && (moveFlag == true)) {
         player.pos.add(1, 0);
     }
-    // if the player reaches the end of the screen
-//  if ((player.pos.x == G.WIDTH)) {
-//    console.log("check2")
-//    moveFlag = true;
-//  } 
-//    // player moving towards the left side -front- of the screen
-//   if ((input.isPressed) && (moveFlag == true)) {
-//    console.log("check")
-//    console.log(moveFlag);
-//    player.pos.sub(1, 0);
-//
-//  }
-//  if ((player.pos.x == 0)) {
-//    console.log("check2")
-//    moveFlag = false;
-//  } 
-   /////////////////////////////////////////////////
+    
   // floor
   color("yellow");
   rect(0, 83, 100, 17).isColliding;
