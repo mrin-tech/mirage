@@ -15,31 +15,45 @@
     <script src="https://unpkg.com/crisp-game-lib@1.1.0/docs/bundle.js"></script>
 
 <script>
-title = "MIRAGE";
+title = "COW KIDNAP";
 
 description = ` 
 Hold To 
-Move Back
+Move Down
 `;
 
 characters = [
+`
+  cc
+ lCCl
+cccccc
+ccyycc
+ yCCy
+y    y
+
+`,
+    
   ` 
-   ll
-l llll
-llllll
+l CccC
+clllll
 l llll
   l  l
   l  l
+  y  y
 `
 ];
 
 const G = {
-	WIDTH: 100,
-	HEIGHT: 100
+	WIDTH: 70,
+	HEIGHT: 70
 };
 options = {
   theme: "dark",
   viewSize: {x: G.WIDTH, y: G.HEIGHT},
+    
+  isCapturing: true,
+  isCapturingGameCanvasOnly : true,
+  captureCanvasScale : 2,
   // isPlayingBgm: true
 };
 
@@ -77,67 +91,61 @@ let moveFlag;
  * @type { Grass }
  */
 let grass1;
-// let grass2;
+
 let fallCounter;
 function update() {
   if (!ticks) {
     fallCounter = 0;
-    grass1 = { pos: vec(rnd(0, G.WIDTH/2), 80) };
-    // grass2 = { pos: vec(rnd((G.WIDTH/2 + 1), G.WIDTH), 80) };
-    fall = times(5, () => {
-      const posX = rnd(0, G.WIDTH);
-      const posY = 0;
+    grass1 = { pos: vec(G.WIDTH/2, rnd(0, G.HEIGHT - ( (G.HEIGHT/2) - 9))) };
+    fall = times(3, () => {
+      const posX = 0; 
+      const posY = rnd(0, G.HEIGHT);
       return {
           pos: vec(posX, posY),
           speed: rnd(0.5, 1.0)
       };
     });
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
       fall.push({
           pos: vec(rnd(0, G.WIDTH), rnd(0, G.HEIGHT)),
           speed: rnd(0.8, 1.5)
       });
     }
-    player = { pos: vec(50, 80) };
+    player = { pos: vec(G.WIDTH/2, G.HEIGHT/2) };
     moveFlag = false;
   }
   // falling items
   fall.forEach((s) => {
-    s.pos.y += s.speed;
+    s.pos.x += s.speed;
     s.pos.wrap(0, G.WIDTH, 0, G.HEIGHT);
-    color("yellow");
+    color("red");
     box(s.pos, 1);
   });
   
   // grass color and shape
-  color("green");
-  box(grass1.pos, 5);
+  color("black");
+  char("b", grass1.pos);
 
+  // make the grass disappear
   if (ticks == 180) {
-    grass1 = { pos: vec(rnd(0, G.WIDTH), 80) };
+    grass1 = { pos: vec(G.WIDTH/2, rnd(0, G.HEIGHT-9)) };
     ticks = 0;
   }
 
   // player color and shape
   color("black");
   char("a", player.pos);
-  // if player is colliding with light black fall
-  const collide = char("a", player.pos).isColliding.rect.light_black;
-  if (collide) {
-    console.log("11collide")
-    // play("explosion");
-  }
-  const grassCollide = char("a", player.pos).isColliding.rect.green;
+
+  const grassCollide = char("a", player.pos).isColliding.char.b;
   if (grassCollide) {
     console.log("grass")
-    grass1 = { pos: vec(rnd(0, G.WIDTH), 80) };
+    grass1 = { pos: vec(G.WIDTH/2, rnd(0, G.HEIGHT-9)) };
     play("coin");
     addScore(1);
-    // grass2 = { pos: vec(rnd((G.WIDTH/2 + 20), G.WIDTH), 80) };
-    // play("explosion");
+
   }
 
-  const fallCollide = char("a", player.pos).isColliding.rect.yellow;
+  const fallCollide = char("a", player.pos).isColliding.rect.red;
   if (fallCollide) {
     fallCounter+=1;
   }
@@ -150,25 +158,30 @@ function update() {
   // player movement
 
     // if the input it pressed and the player hasnt reached the end of the screen
-    player.pos.clamp(0, G.WIDTH, 0, G.HEIGHT);
-  if ((input.isPressed) && (player.pos.x != G.WIDTH) && (moveFlag == false)) {
-    player.pos.add(1, 0);
-    console.log(player.pos.x);
+    player.pos.clamp(0, G.WIDTH, 0, G.HEIGHT-9);
+  if ((input.isPressed) && (player.pos.y != G.HEIGHT) && (moveFlag == false)) {
+    player.pos.add(0, 1);
   }  
     if (!(input.isPressed)) {
-        player.pos.sub(1, 0);
+        player.pos.sub(0, 1);
     }
-    if (!(input.isPressed) && (player.pos.x == 0)) {
+    if (!(input.isPressed) && (player.pos.y == 0)) {
         moveFlag = true
-        player.pos.sub(1, 0);
+        player.pos.sub(0, 1);
     }
     if ((input.isPressed) && (moveFlag == true)) {
-        player.pos.add(1, 0);
+        player.pos.add(0, 1);
     }
     
   // floor
-  color("yellow");
-  rect(0, 83, 100, 17).isColliding;
+  color("purple");
+  rect(0, 65, 70, 10).isColliding;
+  color("light_cyan")
+  rect(0, 66, 70, 10).isColliding;
+  color("cyan")
+  rect(0, 67, 70, 1).isColliding; 
+  color("purple");
+  rect(0, 69, 70, 10).isColliding;
 }
 
 
